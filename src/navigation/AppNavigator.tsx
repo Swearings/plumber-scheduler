@@ -6,6 +6,7 @@ import { User } from '../types';
 import HomeScreen from '../screens/HomeScreen';
 import ScheduleScreen from '../screens/ScheduleScreen';
 import BillingScreen from '../screens/BillingScreen';
+import PermitsScreen from '../screens/PermitsScreen';
 import MapScreen from '../screens/MapScreen';
 
 const Tab = createBottomTabNavigator();
@@ -28,6 +29,7 @@ export default function AppNavigator({ user }: Props) {
             Home: focused ? 'home' : 'home-outline',
             Calendar: focused ? 'calendar' : 'calendar-outline',
             Billing: focused ? 'card' : 'card-outline',
+            Permits: focused ? 'document-text' : 'document-text-outline',
             Map: focused ? 'map' : 'map-outline',
           };
           return <Ionicons name={icons[route.name] as any} size={size} color={color} />;
@@ -53,6 +55,7 @@ export default function AppNavigator({ user }: Props) {
       <Tab.Screen name="Billing">
         {() => <BillingScreen userId={user.id} />}
       </Tab.Screen>
+      <Tab.Screen name="Permits" component={PermitsScreen} />
       <Tab.Screen name="Map" component={MapScreen} />
     </Tab.Navigator>
   );
