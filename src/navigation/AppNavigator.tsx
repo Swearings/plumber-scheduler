@@ -18,8 +18,9 @@ interface Props {
 export default function AppNavigator({ user }: Props) {
   const isDispatcher = user.role === 'dispatcher';
   const insets = useSafeAreaInsets();
-  // Keep a small gap above the home indicator instead of the full inset.
-  const tabBottomPad = Math.max(insets.bottom - 14, 6);
+  // Cap the gap above the home indicator. In standalone PWA mode insets.bottom
+  // is large (~34); capping keeps the tab bar tight in both Safari and standalone.
+  const tabBottomPad = Math.min(insets.bottom, 10);
 
   return (
     <Tab.Navigator
