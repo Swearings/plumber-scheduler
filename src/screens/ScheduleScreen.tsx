@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, ScrollView, ActivityIndicator } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import dayjs from 'dayjs';
 import { fetchJobs } from '../lib/jobsApi';
 import { Job } from '../types';
@@ -14,6 +15,7 @@ interface Props {
 }
 
 export default function ScheduleScreen({ userId, isDispatcher }: Props) {
+  const insets = useSafeAreaInsets();
   const [expanded, setExpanded] = useState(false); // false = week, true = month
   const [anchor, setAnchor] = useState(dayjs());     // drives which week/month is shown
   const [selectedDate, setSelectedDate] = useState(dayjs().startOf('day'));
@@ -84,7 +86,7 @@ export default function ScheduleScreen({ userId, isDispatcher }: Props) {
   const dayJobs = jobsOn(selectedDate);
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { paddingTop: insets.top }]}>
       {/* Header: range label + prev/next */}
       <View style={styles.header}>
         <TouchableOpacity onPress={goPrev} style={styles.navBtn}>

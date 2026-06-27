@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, ActivityIndicator, RefreshControl } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import dayjs from 'dayjs';
 import { fetchJobs, updateJobStatus } from '../lib/jobsApi';
 import { fetchInvoices } from '../lib/invoicesApi';
@@ -23,6 +24,7 @@ interface Props {
 }
 
 export default function HomeScreen({ userId, isDispatcher }: Props) {
+  const insets = useSafeAreaInsets();
   const [period, setPeriod] = useState<Period>('week');
   const [periodOpen, setPeriodOpen] = useState(false);
   const [hideRevenue, setHideRevenue] = useState(true);
@@ -71,7 +73,7 @@ export default function HomeScreen({ userId, isDispatcher }: Props) {
   return (
     <ScrollView
       style={styles.container}
-      contentContainerStyle={{ padding: 16, paddingBottom: 40 }}
+      contentContainerStyle={{ padding: 16, paddingTop: insets.top + 12, paddingBottom: 40 }}
       refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="#3b82f6" />}
     >
       {/* Welcome */}

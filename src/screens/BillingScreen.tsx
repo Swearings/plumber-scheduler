@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, ActivityIndicator, RefreshControl } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import dayjs from 'dayjs';
 import { fetchInvoices } from '../lib/invoicesApi';
 import { Invoice, InvoiceStatus, invoiceTotal } from '../types';
@@ -32,6 +33,7 @@ interface Props {
 }
 
 export default function BillingScreen({ userId }: Props) {
+  const insets = useSafeAreaInsets();
   const [month, setMonth] = useState(dayjs().startOf('month'));
   const [invoices, setInvoices] = useState<Invoice[]>([]);
   const [loading, setLoading] = useState(true);
@@ -88,7 +90,7 @@ export default function BillingScreen({ userId }: Props) {
   return (
     <View style={styles.container}>
       <ScrollView
-        contentContainerStyle={{ padding: 16, paddingBottom: 90 }}
+        contentContainerStyle={{ padding: 16, paddingTop: insets.top + 12, paddingBottom: 90 }}
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="#3b82f6" />}
       >
         {/* ===== REVENUE (top) ===== */}

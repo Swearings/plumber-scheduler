@@ -31,9 +31,7 @@ export default function AppNavigator({ user }: Props) {
         tabBarStyle: { backgroundColor: '#0f172a', borderTopColor: '#1e293b' },
         tabBarActiveTintColor: '#3b82f6',
         tabBarInactiveTintColor: '#475569',
-        headerStyle: { backgroundColor: '#0f172a' },
-        headerTitleStyle: { color: '#f1f5f9' },
-        headerShadowVisible: false,
+        headerShown: false,
       })}
     >
       <Tab.Screen name="Home">
