@@ -1,0 +1,36 @@
+{
+  "expo": {
+    "name": "PlumberPro",
+    "slug": "plumber-scheduler",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "dark",
+    "backgroundColor": "#0f172a",
+    "ios": {
+      "supportsTablet": true
+    },
+    "android": {
+      "adaptiveIcon": {
+        "backgroundColor": "#0f172a",
+        "foregroundImage": "./assets/android-icon-foreground.png",
+        "backgroundImage": "./assets/android-icon-background.png",
+        "monochromeImage": "./assets/android-icon-monochrome.png"
+      }
+    },
+    "web": {
+      "favicon": "./assets/favicon.png",
+      "bundler": "metro",
+      "output": "single",
+      "name": "PlumberPro",
+      "shortName": "PlumberPro",
+      "lang": "en",
+      "scope": "/",
+      "themeColor": "#0f172a",
+      "backgroundColor": "#0f172a",
+      "display": "standalone",
+      "orientation": "portrait",
+      "startUrl": "/"
+    }
+  }
+}
