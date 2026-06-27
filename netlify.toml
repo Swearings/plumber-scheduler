@@ -7,3 +7,15 @@
   from = "/*"
   to = "/index.html"
   status = 200
+
+# Never cache the HTML shell or manifest, so new deploys show up immediately.
+# (The JS bundles have content-hashed names, so they're safe to cache forever.)
+[[headers]]
+  for = "/index.html"
+  [headers.values]
+    Cache-Control = "no-store, max-age=0, must-revalidate"
+
+[[headers]]
+  for = "/manifest.json"
+  [headers.values]
+    Cache-Control = "no-store, max-age=0, must-revalidate"
