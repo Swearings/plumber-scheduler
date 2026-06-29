@@ -10,6 +10,32 @@ export interface User {
 
 export type JobStatus = 'scheduled' | 'en_route' | 'in_progress' | 'completed' | 'cancelled';
 
+export type LeadStatus = 'new' | 'contacted' | 'quoted' | 'scheduled' | 'won' | 'lost';
+
+export interface Lead {
+  id: string;
+  phone: string;            // the only required field
+  name?: string;
+  email?: string;
+  address?: string;
+  source?: string;          // e.g. "Referral", "Google", "Repeat customer"
+  notes?: string;
+  status: LeadStatus;
+  created_by: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export const LEAD_STATUSES: LeadStatus[] = ['new', 'contacted', 'quoted', 'scheduled', 'won', 'lost'];
+
+export const LEAD_STATUS_LABELS: Record<LeadStatus, string> = {
+  new: 'New', contacted: 'Contacted', quoted: 'Quoted', scheduled: 'Scheduled', won: 'Won', lost: 'Lost',
+};
+
+export const LEAD_STATUS_COLORS: Record<LeadStatus, string> = {
+  new: '#3b82f6', contacted: '#f59e0b', quoted: '#8b5cf6', scheduled: '#06b6d4', won: '#10b981', lost: '#6b7280',
+};
+
 export interface Job {
   id: string;
   customer_name: string;

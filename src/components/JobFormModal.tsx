@@ -15,17 +15,24 @@ const STATUS_LABELS: Record<JobStatus, string> = {
   completed: 'Completed', cancelled: 'Cancelled',
 };
 
+interface JobPrefill {
+  customer_name?: string;
+  phone?: string;
+  address?: string;
+}
+
 interface Props {
   visible: boolean;
   job?: Job | null;        // null/undefined = create mode
   defaultDate?: string;    // ISO for prefilling new jobs
+  prefill?: JobPrefill | null; // prefill a NEW job (e.g. from a lead)
   currentUserId: string;
   onClose: () => void;
   onSaved: () => void;
   onCreateInvoice?: (job: Job) => void; // shown in edit mode
 }
 
-export default function JobFormModal({ visible, job, defaultDate, currentUserId, onClose, onSaved, onCreateInvoice }: Props) {
+export default function JobFormModal({ visible, job, defaultDate, prefill, currentUserId, onClose, onSaved, onCreateInvoice }: Props) {
   const isEdit = !!job;
   const [saving, setSaving] = useState(false);
 
@@ -56,7 +63,9 @@ export default function JobFormModal({ visible, job, defaultDate, currentUserId,
       setNotes(job.notes || '');
     } else {
       const base = defaultDate ? dayjs(defaultDate) : dayjs();
-      setCustomerName(''); setAddress(''); setPhone('');
+      setCustomerName(prefill?.customer_name || '');
+      setAddress(prefill?.address || '');
+      setPhone(prefill?.phone || '');
       setJobType(''); setDuration('');
       setStatus('scheduled'); setDate(base.format('YYYY-MM-DD'));
       setTime('09:00'); setNotes('');
