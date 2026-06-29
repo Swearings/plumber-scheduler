@@ -1,11 +1,12 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, ActivityIndicator, RefreshControl } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, ActivityIndicator, RefreshControl, Linking } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import dayjs from 'dayjs';
 import { fetchJobs, updateJobStatus } from '../lib/jobsApi';
 import { fetchInvoices } from '../lib/invoicesApi';
-import { Job, JobStatus, Invoice, invoiceTotal } from '../types';
+import { fetchLeads } from '../lib/leadsApi';
+import { Job, JobStatus, Invoice, invoiceTotal, Lead, LEAD_STATUS_COLORS, LEAD_STATUS_LABELS } from '../types';
 import { COMPANY_NAME } from '../lib/config';
 import JobCard from '../components/JobCard';
 
@@ -30,11 +31,12 @@ export default function HomeScreen({ userId, isDispatcher }: Props) {
   const [hideRevenue, setHideRevenue] = useState(true);
   const [invoices, setInvoices] = useState<Invoice[]>([]);
   const [todayJobs, setTodayJobs] = useState<Job[]>([]);
+  const [newLeads, setNewLeads] = useState<Lead[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
 
   async function load() {
-    const [inv, jobs] = await Promise.all([
+    const [inv, jobs, leads] = await Promise.all([
       fetchInvoices(),
       fetchJobs({
         userId,
@@ -42,9 +44,11 @@ export default function HomeScreen({ userId, isDispatcher }: Props) {
         rangeStart: dayjs().startOf('day').toISOString(),
         rangeEnd: dayjs().endOf('day').toISOString(),
       }),
+      fetchLeads(),
     ]);
     setInvoices(inv);
     setTodayJobs(jobs);
+    setNewLeads(leads.filter(l => l.status === 'new'));
   }
   useEffect(() => { load().finally(() => setLoading(false)); }, []);
   async function onRefresh() { setRefreshing(true); await load(); setRefreshing(false); }
@@ -133,6 +137,31 @@ export default function HomeScreen({ userId, isDispatcher }: Props) {
             <JobCard key={job.id} job={job} onStatusChange={(s) => changeStatus(job.id, s)} />
           ))
       }
+
+      {/* New leads */}
+      {newLeads.length > 0 && (
+        <>
+          <View style={[styles.sectionHead, { marginTop: 24 }]}>
+            <Text style={styles.sectionTitle}>New Leads</Text>
+            <Text style={styles.sectionCount}>{newLeads.length}</Text>
+          </View>
+          {newLeads.map(lead => (
+            <View key={lead.id} style={styles.leadCard}>
+              <View style={[styles.leadDot, { backgroundColor: LEAD_STATUS_COLORS[lead.status] }]} />
+              <View style={{ flex: 1 }}>
+                <Text style={styles.leadName}>{lead.name || lead.phone}</Text>
+                <Text style={styles.leadMeta}>
+                  {lead.source ? `${lead.source} · ` : ''}{LEAD_STATUS_LABELS[lead.status]}
+                </Text>
+              </View>
+              <TouchableOpacity style={styles.leadCall} onPress={() => Linking.openURL(`tel:${lead.phone}`)}>
+                <Ionicons name="call-outline" size={15} color="#10b981" />
+                <Text style={styles.leadCallText}>{lead.phone}</Text>
+              </TouchableOpacity>
+            </View>
+          ))}
+        </>
+      )}
     </ScrollView>
   );
 }
@@ -164,4 +193,11 @@ const styles = StyleSheet.create({
   sectionCount: { color: '#64748b', fontSize: 13 },
   empty: { alignItems: 'center', paddingVertical: 30, gap: 8 },
   emptyText: { color: '#475569', fontSize: 14 },
+
+  leadCard: { flexDirection: 'row', alignItems: 'center', gap: 10, backgroundColor: '#1e293b', borderRadius: 12, padding: 12, marginBottom: 8 },
+  leadDot: { width: 8, height: 8, borderRadius: 4 },
+  leadName: { color: '#f1f5f9', fontSize: 15, fontWeight: '600' },
+  leadMeta: { color: '#64748b', fontSize: 12, marginTop: 2 },
+  leadCall: { flexDirection: 'row', alignItems: 'center', gap: 5 },
+  leadCallText: { color: '#10b981', fontSize: 14, fontWeight: '600' },
 });
