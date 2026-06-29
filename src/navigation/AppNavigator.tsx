@@ -18,9 +18,9 @@ interface Props {
 export default function AppNavigator({ user }: Props) {
   const isDispatcher = user.role === 'dispatcher';
   const insets = useSafeAreaInsets();
-  // Cap the safe-area inset so the bar stays compact in standalone PWA mode
-  // (where iOS reports a large bottom inset) while leaving room for labels.
-  const pad = Math.min(insets.bottom, 12);
+  // Small fixed-ish bottom gap. Capped low so the bar hugs the bottom in
+  // standalone PWA mode (iOS reports a large inset there).
+  const pad = Math.min(insets.bottom, 6);
 
   return (
     <Tab.Navigator
@@ -35,7 +35,7 @@ export default function AppNavigator({ user }: Props) {
           };
           return <Ionicons name={icons[route.name] as any} size={size} color={color} />;
         },
-        tabBarStyle: { backgroundColor: '#0f172a', borderTopColor: '#1e293b', height: 58 + pad, paddingBottom: pad, paddingTop: 8 },
+        tabBarStyle: { backgroundColor: '#0f172a', borderTopColor: '#1e293b', height: 56 + pad, paddingBottom: pad, paddingTop: 6 },
         tabBarActiveTintColor: '#3b82f6',
         tabBarInactiveTintColor: '#475569',
         headerShown: false,

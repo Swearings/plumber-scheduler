@@ -29,6 +29,10 @@ const tags = `
     <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
     <style>
       html, body, #root { background-color: #0f172a; }
+      /* Fill the full screen incl. bottom safe area in standalone PWA mode,
+         so the tab bar reaches the true bottom edge instead of floating. */
+      html, body { height: 100%; margin: 0; }
+      #root { min-height: 100dvh; }
     </style>
 `;
 
