@@ -29,7 +29,10 @@ export default function AppNavigator({ user }: Props) {
           };
           return <Ionicons name={icons[route.name] as any} size={size} color={color} />;
         },
-        tabBarStyle: { backgroundColor: '#0f172a', borderTopColor: '#1e293b' },
+        // Fixed bottom padding (not the OS safe-area inset): in standalone PWA
+        // mode iOS reports a large bottom inset that pushed the labels up. A fixed
+        // value keeps the bar identical in Safari and standalone.
+        tabBarStyle: { backgroundColor: '#0f172a', borderTopColor: '#1e293b', height: 64, paddingBottom: 12, paddingTop: 8 },
         tabBarActiveTintColor: '#3b82f6',
         tabBarInactiveTintColor: '#475569',
         headerShown: false,
