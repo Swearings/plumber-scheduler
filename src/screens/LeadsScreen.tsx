@@ -173,5 +173,5 @@ const styles = StyleSheet.create({
   scheduleBtn: { flexDirection: 'row', alignItems: 'center', gap: 5, backgroundColor: '#3b82f6', borderRadius: 10, paddingHorizontal: 14, paddingVertical: 8 },
   scheduleText: { color: '#fff', fontSize: 13, fontWeight: '700' },
 
-  fab: { position: 'absolute', right: 20, bottom: 24, width: 56, height: 56, borderRadius: 28, backgroundColor: '#3b82f6', alignItems: 'center', justifyContent: 'center', elevation: 6 },
+  fab: { position: 'absolute', right: 20, bottom: 80, width: 56, height: 56, borderRadius: 28, backgroundColor: '#3b82f6', alignItems: 'center', justifyContent: 'center', elevation: 6 },
 });

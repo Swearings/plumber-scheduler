@@ -18,9 +18,9 @@ interface Props {
 export default function AppNavigator({ user }: Props) {
   const isDispatcher = user.role === 'dispatcher';
   const insets = useSafeAreaInsets();
-  // Small fixed-ish bottom gap. Capped low so the bar hugs the bottom in
-  // standalone PWA mode (iOS reports a large inset there).
-  const pad = Math.min(insets.bottom, 6);
+  // Clearance above the home indicator. Capped so standalone PWA (large inset)
+  // stays tight. The bar itself is absolutely pinned to the bottom edge below.
+  const pad = Math.min(insets.bottom, 10);
 
   return (
     <Tab.Navigator
@@ -35,7 +35,12 @@ export default function AppNavigator({ user }: Props) {
           };
           return <Ionicons name={icons[route.name] as any} size={size} color={color} />;
         },
-        tabBarStyle: { backgroundColor: '#0f172a', borderTopColor: '#1e293b', height: 56 + pad, paddingBottom: pad, paddingTop: 6 },
+        // Absolutely pinned to the bottom edge so it never floats above it.
+        tabBarStyle: {
+          position: 'absolute', left: 0, right: 0, bottom: 0,
+          backgroundColor: '#0f172a', borderTopColor: '#1e293b',
+          height: 56 + pad, paddingBottom: pad, paddingTop: 6,
+        },
         tabBarActiveTintColor: '#3b82f6',
         tabBarInactiveTintColor: '#475569',
         headerShown: false,

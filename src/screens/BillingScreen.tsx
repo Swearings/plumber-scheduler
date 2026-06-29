@@ -271,7 +271,7 @@ const styles = StyleSheet.create({
   empty: { color: '#475569', textAlign: 'center', paddingVertical: 24 },
 
   fab: {
-    position: 'absolute', right: 20, bottom: 24, width: 56, height: 56, borderRadius: 28,
+    position: 'absolute', right: 20, bottom: 80, width: 56, height: 56, borderRadius: 28,
     backgroundColor: '#3b82f6', alignItems: 'center', justifyContent: 'center',
     shadowColor: '#000', shadowOpacity: 0.3, shadowRadius: 6, shadowOffset: { width: 0, height: 3 }, elevation: 6,
   },

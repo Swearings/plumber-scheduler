@@ -245,7 +245,7 @@ const styles = StyleSheet.create({
   todayBtn: { flexDirection: 'row', alignItems: 'center', gap: 4, alignSelf: 'center', marginTop: 6, paddingHorizontal: 12, paddingVertical: 5, borderRadius: 14, backgroundColor: '#1e293b', borderWidth: 1, borderColor: '#334155' },
   todayBtnText: { color: '#60a5fa', fontSize: 12, fontWeight: '600' },
 
-  list: { padding: 16 },
+  list: { padding: 16, paddingBottom: 96 },
   dayHeadingRow: { flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 12 },
   dayHeading: { fontSize: 15, fontWeight: '600', color: '#94a3b8' },
   todayPill: { backgroundColor: '#3b82f6', borderRadius: 10, paddingHorizontal: 8, paddingVertical: 2 },
@@ -253,7 +253,7 @@ const styles = StyleSheet.create({
   empty: { color: '#475569', textAlign: 'center', marginTop: 30 },
 
   fab: {
-    position: 'absolute', right: 20, bottom: 24, width: 56, height: 56, borderRadius: 28,
+    position: 'absolute', right: 20, bottom: 80, width: 56, height: 56, borderRadius: 28,
     backgroundColor: '#3b82f6', alignItems: 'center', justifyContent: 'center',
     shadowColor: '#000', shadowOpacity: 0.3, shadowRadius: 6, shadowOffset: { width: 0, height: 3 }, elevation: 6,
   },

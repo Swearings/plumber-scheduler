@@ -77,7 +77,7 @@ export default function HomeScreen({ userId, isDispatcher }: Props) {
   return (
     <ScrollView
       style={styles.container}
-      contentContainerStyle={{ padding: 16, paddingTop: insets.top + 12, paddingBottom: 40 }}
+      contentContainerStyle={{ padding: 16, paddingTop: insets.top + 12, paddingBottom: 96 }}
       refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="#3b82f6" />}
     >
       {/* Welcome */}

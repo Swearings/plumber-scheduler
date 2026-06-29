@@ -279,7 +279,7 @@ function Wizard({ insetTop, onClose, onSaved }: { insetTop: number; onClose: () 
       </ScrollView>
 
       {/* nav */}
-      <View style={[styles.navBar, { paddingBottom: 12 }]}>
+      <View style={[styles.navBar, { paddingBottom: 80 }]}>
         <TouchableOpacity style={styles.navBtn} disabled={stepIdx === 0} onPress={() => setStepIdx(i => Math.max(0, i - 1))}>
           <Text style={[styles.navBtnText, stepIdx === 0 && { color: '#475569' }]}>Back</Text>
         </TouchableOpacity>
@@ -382,7 +382,7 @@ const styles = StyleSheet.create({
   badge: { borderRadius: 6, paddingHorizontal: 8, paddingVertical: 3 },
   badgeText: { fontSize: 11, fontWeight: '700' },
 
-  fab: { position: 'absolute', right: 20, bottom: 24, width: 56, height: 56, borderRadius: 28, backgroundColor: '#3b82f6', alignItems: 'center', justifyContent: 'center', elevation: 6 },
+  fab: { position: 'absolute', right: 20, bottom: 80, width: 56, height: 56, borderRadius: 28, backgroundColor: '#3b82f6', alignItems: 'center', justifyContent: 'center', elevation: 6 },
 
   wizHeader: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 16, paddingVertical: 10 },
   wizTitle: { color: '#f1f5f9', fontSize: 17, fontWeight: '700' },
