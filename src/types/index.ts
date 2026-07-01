@@ -10,9 +10,11 @@ export interface User {
 
 export type JobStatus = 'scheduled' | 'en_route' | 'in_progress' | 'completed' | 'cancelled';
 
-export type LeadStatus = 'new' | 'contacted' | 'quoted' | 'scheduled' | 'won' | 'lost';
+// A Customer spans the whole lifecycle — an early "lead" is just a customer
+// with status "new". Phone is the only required field.
+export type CustomerStatus = 'new' | 'contacted' | 'quoted' | 'active' | 'repeat' | 'lost';
 
-export interface Lead {
+export interface Customer {
   id: string;
   phone: string;            // the only required field
   name?: string;
@@ -20,24 +22,25 @@ export interface Lead {
   address?: string;
   source?: string;          // e.g. "Referral", "Google", "Repeat customer"
   notes?: string;
-  status: LeadStatus;
+  status: CustomerStatus;
   created_by: string;
   created_at: string;
   updated_at: string;
 }
 
-export const LEAD_STATUSES: LeadStatus[] = ['new', 'contacted', 'quoted', 'scheduled', 'won', 'lost'];
+export const CUSTOMER_STATUSES: CustomerStatus[] = ['new', 'contacted', 'quoted', 'active', 'repeat', 'lost'];
 
-export const LEAD_STATUS_LABELS: Record<LeadStatus, string> = {
-  new: 'New', contacted: 'Contacted', quoted: 'Quoted', scheduled: 'Scheduled', won: 'Won', lost: 'Lost',
+export const CUSTOMER_STATUS_LABELS: Record<CustomerStatus, string> = {
+  new: 'New', contacted: 'Contacted', quoted: 'Quoted', active: 'Active', repeat: 'Repeat', lost: 'Lost',
 };
 
-export const LEAD_STATUS_COLORS: Record<LeadStatus, string> = {
-  new: '#3b82f6', contacted: '#f59e0b', quoted: '#8b5cf6', scheduled: '#06b6d4', won: '#10b981', lost: '#6b7280',
+export const CUSTOMER_STATUS_COLORS: Record<CustomerStatus, string> = {
+  new: '#3b82f6', contacted: '#f59e0b', quoted: '#8b5cf6', active: '#10b981', repeat: '#06b6d4', lost: '#6b7280',
 };
 
 export interface Job {
   id: string;
+  customer_id?: string;     // links to a Customer
   customer_name: string;
   address: string;
   phone: string;
@@ -63,6 +66,7 @@ export interface LineItem {
 
 export interface Invoice {
   id: string;
+  customer_id?: string;     // links to a Customer
   invoice_number: string;
   customer_name: string;
   customer_email: string;

@@ -5,8 +5,8 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import dayjs from 'dayjs';
 import { fetchJobs, updateJobStatus } from '../lib/jobsApi';
 import { fetchInvoices } from '../lib/invoicesApi';
-import { fetchLeads } from '../lib/leadsApi';
-import { Job, JobStatus, Invoice, invoiceTotal, Lead, LEAD_STATUS_COLORS, LEAD_STATUS_LABELS } from '../types';
+import { fetchCustomers } from '../lib/customersApi';
+import { Job, JobStatus, Invoice, invoiceTotal, Customer, CUSTOMER_STATUS_COLORS, CUSTOMER_STATUS_LABELS } from '../types';
 import { COMPANY_NAME } from '../lib/config';
 import JobCard from '../components/JobCard';
 
@@ -31,7 +31,7 @@ export default function HomeScreen({ userId, isDispatcher }: Props) {
   const [hideRevenue, setHideRevenue] = useState(true);
   const [invoices, setInvoices] = useState<Invoice[]>([]);
   const [todayJobs, setTodayJobs] = useState<Job[]>([]);
-  const [newLeads, setNewLeads] = useState<Lead[]>([]);
+  const [newLeads, setNewLeads] = useState<Customer[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
 
@@ -44,7 +44,7 @@ export default function HomeScreen({ userId, isDispatcher }: Props) {
         rangeStart: dayjs().startOf('day').toISOString(),
         rangeEnd: dayjs().endOf('day').toISOString(),
       }),
-      fetchLeads(),
+      fetchCustomers(),
     ]);
     setInvoices(inv);
     setTodayJobs(jobs);
@@ -147,11 +147,11 @@ export default function HomeScreen({ userId, isDispatcher }: Props) {
           </View>
           {newLeads.map(lead => (
             <View key={lead.id} style={styles.leadCard}>
-              <View style={[styles.leadDot, { backgroundColor: LEAD_STATUS_COLORS[lead.status] }]} />
+              <View style={[styles.leadDot, { backgroundColor: CUSTOMER_STATUS_COLORS[lead.status] }]} />
               <View style={{ flex: 1 }}>
                 <Text style={styles.leadName}>{lead.name || lead.phone}</Text>
                 <Text style={styles.leadMeta}>
-                  {lead.source ? `${lead.source} · ` : ''}{LEAD_STATUS_LABELS[lead.status]}
+                  {lead.source ? `${lead.source} · ` : ''}{CUSTOMER_STATUS_LABELS[lead.status]}
                 </Text>
               </View>
               <TouchableOpacity style={styles.leadCall} onPress={() => Linking.openURL(`tel:${lead.phone}`)}>

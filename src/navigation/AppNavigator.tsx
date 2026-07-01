@@ -7,7 +7,7 @@ import HomeScreen from '../screens/HomeScreen';
 import ScheduleScreen from '../screens/ScheduleScreen';
 import BillingScreen from '../screens/BillingScreen';
 import PermitsScreen from '../screens/PermitsScreen';
-import LeadsScreen from '../screens/LeadsScreen';
+import CustomersScreen from '../screens/CustomersScreen';
 
 const Tab = createBottomTabNavigator();
 
@@ -31,7 +31,7 @@ export default function AppNavigator({ user }: Props) {
             Calendar: focused ? 'calendar' : 'calendar-outline',
             Billing: focused ? 'card' : 'card-outline',
             Permits: focused ? 'document-text' : 'document-text-outline',
-            Leads: focused ? 'people' : 'people-outline',
+            Customers: focused ? 'people' : 'people-outline',
           };
           return <Ionicons name={icons[route.name] as any} size={size} color={color} />;
         },
@@ -56,8 +56,8 @@ export default function AppNavigator({ user }: Props) {
         {() => <BillingScreen userId={user.id} />}
       </Tab.Screen>
       <Tab.Screen name="Permits" component={PermitsScreen} />
-      <Tab.Screen name="Leads">
-        {() => <LeadsScreen userId={user.id} />}
+      <Tab.Screen name="Customers">
+        {() => <CustomersScreen userId={user.id} />}
       </Tab.Screen>
     </Tab.Navigator>
   );

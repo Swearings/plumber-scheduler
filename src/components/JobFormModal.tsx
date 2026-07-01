@@ -19,6 +19,7 @@ interface JobPrefill {
   customer_name?: string;
   phone?: string;
   address?: string;
+  customer_id?: string;
 }
 
 interface Props {
@@ -35,6 +36,7 @@ interface Props {
 export default function JobFormModal({ visible, job, defaultDate, prefill, currentUserId, onClose, onSaved, onCreateInvoice }: Props) {
   const isEdit = !!job;
   const [saving, setSaving] = useState(false);
+  const [customerId, setCustomerId] = useState<string | undefined>(undefined);
 
   const [customerName, setCustomerName] = useState('');
   const [address, setAddress] = useState('');
@@ -52,6 +54,7 @@ export default function JobFormModal({ visible, job, defaultDate, prefill, curre
     setShowCalendar(false);
 
     if (job) {
+      setCustomerId(job.customer_id);
       setCustomerName(job.customer_name);
       setAddress(job.address);
       setPhone(job.phone);
@@ -63,6 +66,7 @@ export default function JobFormModal({ visible, job, defaultDate, prefill, curre
       setNotes(job.notes || '');
     } else {
       const base = defaultDate ? dayjs(defaultDate) : dayjs();
+      setCustomerId(prefill?.customer_id);
       setCustomerName(prefill?.customer_name || '');
       setAddress(prefill?.address || '');
       setPhone(prefill?.phone || '');
@@ -117,6 +121,7 @@ export default function JobFormModal({ visible, job, defaultDate, prefill, curre
     }
 
     const input: JobInput = {
+      customer_id: customerId,
       customer_name: customerName.trim(),
       address: address.trim(),
       phone: phone.trim(),

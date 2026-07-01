@@ -4,72 +4,61 @@ import {
   ScrollView, KeyboardAvoidingView, Platform, Alert, ActivityIndicator,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { Lead, LeadStatus, LEAD_STATUSES, LEAD_STATUS_LABELS } from '../types';
-import { saveLead, deleteLead, LeadInput } from '../lib/leadsApi';
+import { Customer, CustomerStatus, CUSTOMER_STATUSES, CUSTOMER_STATUS_LABELS } from '../types';
+import { saveCustomer, deleteCustomer, CustomerInput } from '../lib/customersApi';
 
 interface Props {
   visible: boolean;
-  lead?: Lead | null;
+  customer?: Customer | null;
   currentUserId: string;
   onClose: () => void;
   onSaved: () => void;
 }
 
-export default function LeadFormModal({ visible, lead, currentUserId, onClose, onSaved }: Props) {
-  const isEdit = !!lead;
+export default function CustomerFormModal({ visible, customer, currentUserId, onClose, onSaved }: Props) {
+  const isEdit = !!customer;
   const [saving, setSaving] = useState(false);
-
   const [phone, setPhone] = useState('');
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [address, setAddress] = useState('');
   const [source, setSource] = useState('');
   const [notes, setNotes] = useState('');
-  const [status, setStatus] = useState<LeadStatus>('new');
+  const [status, setStatus] = useState<CustomerStatus>('new');
 
   useEffect(() => {
     if (!visible) return;
-    if (lead) {
-      setPhone(lead.phone); setName(lead.name || ''); setEmail(lead.email || '');
-      setAddress(lead.address || ''); setSource(lead.source || ''); setNotes(lead.notes || '');
-      setStatus(lead.status);
+    if (customer) {
+      setPhone(customer.phone); setName(customer.name || ''); setEmail(customer.email || '');
+      setAddress(customer.address || ''); setSource(customer.source || ''); setNotes(customer.notes || '');
+      setStatus(customer.status);
     } else {
       setPhone(''); setName(''); setEmail(''); setAddress(''); setSource(''); setNotes(''); setStatus('new');
     }
-  }, [visible, lead]);
+  }, [visible, customer]);
 
   async function handleSave() {
-    if (!phone.trim()) {
-      Alert.alert('Phone required', 'A phone number is the only required field.');
-      return;
-    }
-    const input: LeadInput = {
+    if (!phone.trim()) { Alert.alert('Phone required', 'A phone number is the only required field.'); return; }
+    const input: CustomerInput = {
       phone: phone.trim(),
       name: name.trim() || undefined,
       email: email.trim() || undefined,
       address: address.trim() || undefined,
       source: source.trim() || undefined,
       notes: notes.trim() || undefined,
-      status,
-      created_by: currentUserId,
+      status, created_by: currentUserId,
     };
     setSaving(true);
-    try {
-      await saveLead(input, lead?.id);
-      onSaved();
-      onClose();
-    } catch (e: any) {
-      Alert.alert('Error', e.message);
-    } finally {
-      setSaving(false);
-    }
+    try { await saveCustomer(input, customer?.id); onSaved(); onClose(); }
+    catch (e: any) { Alert.alert('Error', e.message); }
+    finally { setSaving(false); }
   }
 
   function handleDelete() {
-    if (!lead) return;
-    Alert.alert('Delete lead?', `Remove ${lead.name || lead.phone}?`, [
+    if (!customer) return;
+    Alert.alert('Delete customer?', `Remove ${customer.name || customer.phone}?`, [
       { text: 'Cancel', style: 'cancel' },
-      { text: 'Delete', style: 'destructive', onPress: async () => { await deleteLead(lead.id); onSaved(); onClose(); } },
+      { text: 'Delete', style: 'destructive', onPress: async () => { await deleteCustomer(customer.id); onSaved(); onClose(); } },
     ]);
   }
 
@@ -79,7 +68,7 @@ export default function LeadFormModal({ visible, lead, currentUserId, onClose, o
         <View style={styles.sheet}>
           <View style={styles.handle} />
           <View style={styles.headerRow}>
-            <Text style={styles.title}>{isEdit ? 'Edit Lead' : 'New Lead'}</Text>
+            <Text style={styles.title}>{isEdit ? 'Edit Customer' : 'New Customer'}</Text>
             <TouchableOpacity onPress={onClose}><Ionicons name="close" size={24} color="#94a3b8" /></TouchableOpacity>
           </View>
 
@@ -101,11 +90,11 @@ export default function LeadFormModal({ visible, lead, currentUserId, onClose, o
 
             <Text style={styles.label}>Status</Text>
             <View style={styles.chips}>
-              {LEAD_STATUSES.map(s => {
+              {CUSTOMER_STATUSES.map(s => {
                 const on = status === s;
                 return (
                   <TouchableOpacity key={s} style={[styles.chip, on && styles.chipOn]} onPress={() => setStatus(s)}>
-                    <Text style={[styles.chipText, on && styles.chipTextOn]}>{LEAD_STATUS_LABELS[s]}</Text>
+                    <Text style={[styles.chipText, on && styles.chipTextOn]}>{CUSTOMER_STATUS_LABELS[s]}</Text>
                   </TouchableOpacity>
                 );
               })}
@@ -115,13 +104,13 @@ export default function LeadFormModal({ visible, lead, currentUserId, onClose, o
             <TextInput style={[styles.input, styles.notes]} value={notes} onChangeText={setNotes} multiline placeholder="What do they need?" placeholderTextColor="#475569" />
 
             <TouchableOpacity style={styles.saveBtn} onPress={handleSave} disabled={saving}>
-              {saving ? <ActivityIndicator color="#fff" /> : <Text style={styles.saveText}>{isEdit ? 'Save Changes' : 'Add Lead'}</Text>}
+              {saving ? <ActivityIndicator color="#fff" /> : <Text style={styles.saveText}>{isEdit ? 'Save Changes' : 'Add Customer'}</Text>}
             </TouchableOpacity>
 
             {isEdit && (
               <TouchableOpacity style={styles.deleteBtn} onPress={handleDelete}>
                 <Ionicons name="trash-outline" size={16} color="#ef4444" />
-                <Text style={styles.deleteText}>Delete Lead</Text>
+                <Text style={styles.deleteText}>Delete Customer</Text>
               </TouchableOpacity>
             )}
           </ScrollView>

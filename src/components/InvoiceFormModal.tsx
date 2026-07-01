@@ -12,6 +12,8 @@ import MiniCalendar from './MiniCalendar';
 export interface InvoicePrefill {
   customer_name: string;
   customer_address: string;
+  customer_email?: string;
+  customer_id?: string;
   job_id?: string;
   job_type?: string; // becomes the first line item description
 }
@@ -35,6 +37,7 @@ export default function InvoiceFormModal({ visible, invoice, prefill, currentUse
   const isEdit = !!invoice;
   const [saving, setSaving] = useState(false);
   const [jobId, setJobId] = useState<string | undefined>(undefined);
+  const [customerId, setCustomerId] = useState<string | undefined>(undefined);
 
   const [invoiceNumber, setInvoiceNumber] = useState('');
   const [customerName, setCustomerName] = useState('');
@@ -63,17 +66,19 @@ export default function InvoiceFormModal({ visible, invoice, prefill, currentUse
       setIssuedDate(invoice.issued_date);
       setDueDate(invoice.due_date);
       setJobId(invoice.job_id);
+      setCustomerId(invoice.customer_id);
     } else {
-      // New invoice — optionally pre-filled from a job on the schedule.
+      // New invoice — optionally pre-filled from a job or customer.
       setInvoiceNumber(suggestInvoiceNumber());
       setCustomerName(prefill?.customer_name || '');
-      setCustomerEmail('');
+      setCustomerEmail(prefill?.customer_email || '');
       setCustomerAddress(prefill?.customer_address || '');
       setItems([{ ...emptyItem(), description: prefill?.job_type || '' }]);
       setTaxRate('8.5'); setNotes('');
       setIssuedDate(dayjs().format('YYYY-MM-DD'));
       setDueDate(dayjs().add(14, 'day').format('YYYY-MM-DD'));
       setJobId(prefill?.job_id);
+      setCustomerId(prefill?.customer_id);
     }
   }, [visible, invoice]);
 
@@ -120,6 +125,7 @@ export default function InvoiceFormModal({ visible, invoice, prefill, currentUse
       customer_name: customerName.trim(),
       customer_email: customerEmail.trim(),
       customer_address: customerAddress.trim(),
+      customer_id: customerId,
       job_id: jobId,
       line_items: cleanItems,
       tax_rate: taxNum,

@@ -49,6 +49,7 @@ export type ScreeningResult = 'likely_required' | 'may_not_be_required' | 'needs
 
 export interface Permit {
   id: string;
+  customer_id?: string;     // links to a Customer
   reference: string;
   city: string;
   category: string;          // permit category
