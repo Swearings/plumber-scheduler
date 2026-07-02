@@ -54,32 +54,14 @@ export default function JobCard({ job, onPress, onStatusChange }: Props) {
         <View style={styles.header}>
           <Text style={styles.customerName}>{job.customer_name}</Text>
           {onStatusChange ? (
-            <View>
-              <TouchableOpacity
-                style={[styles.statusBadge, { backgroundColor: statusColor + '22' }]}
-                onPress={() => setMenuOpen(o => !o)}
-                activeOpacity={0.7}
-              >
-                <Text style={[styles.statusText, { color: statusColor }]}>{STATUS_LABELS[job.status]}</Text>
-                <Ionicons name={menuOpen ? 'chevron-up' : 'chevron-down'} size={11} color={statusColor} />
-              </TouchableOpacity>
-              {menuOpen && (
-                <View style={styles.statusMenu}>
-                  {STATUS_ORDER.map(s => (
-                    <TouchableOpacity
-                      key={s}
-                      style={styles.statusItem}
-                      onPress={() => { setMenuOpen(false); if (s !== job.status) onStatusChange(s); }}
-                    >
-                      <View style={[styles.statusDot, { backgroundColor: STATUS_COLORS[s] }]} />
-                      <Text style={[styles.statusItemText, s === job.status && { color: STATUS_COLORS[s], fontWeight: '700' }]}>
-                        {STATUS_LABELS[s]}
-                      </Text>
-                    </TouchableOpacity>
-                  ))}
-                </View>
-              )}
-            </View>
+            <TouchableOpacity
+              style={[styles.statusBadge, { backgroundColor: statusColor + '22' }]}
+              onPress={() => setMenuOpen(o => !o)}
+              activeOpacity={0.7}
+            >
+              <Text style={[styles.statusText, { color: statusColor }]}>{STATUS_LABELS[job.status]}</Text>
+              <Ionicons name={menuOpen ? 'chevron-up' : 'chevron-down'} size={11} color={statusColor} />
+            </TouchableOpacity>
           ) : (
             <View style={[styles.statusBadge, { backgroundColor: statusColor + '22' }]}>
               <Text style={[styles.statusText, { color: statusColor }]}>{STATUS_LABELS[job.status]}</Text>
@@ -111,6 +93,24 @@ export default function JobCard({ job, onPress, onStatusChange }: Props) {
             )}
           </View>
         )}
+
+        {/* Status menu rendered last so it paints above the footer/rows */}
+        {onStatusChange && menuOpen && (
+          <View style={styles.statusMenu}>
+            {STATUS_ORDER.map(s => (
+              <TouchableOpacity
+                key={s}
+                style={styles.statusItem}
+                onPress={() => { setMenuOpen(false); if (s !== job.status) onStatusChange(s); }}
+              >
+                <View style={[styles.statusDot, { backgroundColor: STATUS_COLORS[s] }]} />
+                <Text style={[styles.statusItemText, s === job.status && { color: STATUS_COLORS[s], fontWeight: '700' }]}>
+                  {STATUS_LABELS[s]}
+                </Text>
+              </TouchableOpacity>
+            ))}
+          </View>
+        )}
       </View>
     </TouchableOpacity>
   );
@@ -129,7 +129,7 @@ const styles = StyleSheet.create({
   customerName: { fontSize: 16, fontWeight: '600', color: '#f1f5f9', flex: 1, marginRight: 8 },
   statusBadge: { flexDirection: 'row', alignItems: 'center', gap: 3, borderRadius: 6, paddingHorizontal: 8, paddingVertical: 3 },
   statusText: { fontSize: 11, fontWeight: '600' },
-  statusMenu: { position: 'absolute', top: 26, right: 0, backgroundColor: '#0f172a', borderRadius: 10, borderWidth: 1, borderColor: '#334155', paddingVertical: 4, minWidth: 130, zIndex: 50, elevation: 8 },
+  statusMenu: { position: 'absolute', top: 38, right: 0, backgroundColor: '#0f172a', borderRadius: 10, borderWidth: 1, borderColor: '#334155', paddingVertical: 4, minWidth: 140, zIndex: 999, elevation: 20 },
   statusItem: { flexDirection: 'row', alignItems: 'center', gap: 8, paddingHorizontal: 12, paddingVertical: 9 },
   statusDot: { width: 8, height: 8, borderRadius: 4 },
   statusItemText: { color: '#cbd5e1', fontSize: 13 },

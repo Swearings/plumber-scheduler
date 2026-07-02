@@ -80,22 +80,10 @@ export default function CustomersScreen({ userId }: Props) {
                 <TouchableOpacity activeOpacity={0.8} onPress={() => setMode({ kind: 'detail', id: c.id })}>
                   <View style={styles.cardTop}>
                     <Text style={styles.name}>{c.name || c.phone}</Text>
-                    <View>
-                      <TouchableOpacity style={[styles.badge, { backgroundColor: color + '22' }]} onPress={() => setMenuFor(menuFor === c.id ? null : c.id)}>
-                        <Text style={[styles.badgeText, { color }]}>{CUSTOMER_STATUS_LABELS[c.status]}</Text>
-                        <Ionicons name={menuFor === c.id ? 'chevron-up' : 'chevron-down'} size={11} color={color} />
-                      </TouchableOpacity>
-                      {menuFor === c.id && (
-                        <View style={styles.menu}>
-                          {CUSTOMER_STATUSES.map(s => (
-                            <TouchableOpacity key={s} style={styles.menuItem} onPress={() => changeStatus(c.id, s)}>
-                              <View style={[styles.dot, { backgroundColor: CUSTOMER_STATUS_COLORS[s] }]} />
-                              <Text style={[styles.menuText, s === c.status && { color: CUSTOMER_STATUS_COLORS[s], fontWeight: '700' }]}>{CUSTOMER_STATUS_LABELS[s]}</Text>
-                            </TouchableOpacity>
-                          ))}
-                        </View>
-                      )}
-                    </View>
+                    <TouchableOpacity style={[styles.badge, { backgroundColor: color + '22' }]} onPress={() => setMenuFor(menuFor === c.id ? null : c.id)}>
+                      <Text style={[styles.badgeText, { color }]}>{CUSTOMER_STATUS_LABELS[c.status]}</Text>
+                      <Ionicons name={menuFor === c.id ? 'chevron-up' : 'chevron-down'} size={11} color={color} />
+                    </TouchableOpacity>
                   </View>
                   {!!c.address && <Text style={styles.meta}>{c.address}</Text>}
                   {!!c.notes && <Text style={styles.notes} numberOfLines={2}>{c.notes}</Text>}
@@ -110,6 +98,18 @@ export default function CustomersScreen({ userId }: Props) {
                     <Ionicons name="chevron-forward" size={14} color="#60a5fa" />
                   </TouchableOpacity>
                 </View>
+
+                {/* Status menu rendered last so it paints above the card's other elements */}
+                {menuFor === c.id && (
+                  <View style={styles.menu}>
+                    {CUSTOMER_STATUSES.map(s => (
+                      <TouchableOpacity key={s} style={styles.menuItem} onPress={() => changeStatus(c.id, s)}>
+                        <View style={[styles.dot, { backgroundColor: CUSTOMER_STATUS_COLORS[s] }]} />
+                        <Text style={[styles.menuText, s === c.status && { color: CUSTOMER_STATUS_COLORS[s], fontWeight: '700' }]}>{CUSTOMER_STATUS_LABELS[s]}</Text>
+                      </TouchableOpacity>
+                    ))}
+                  </View>
+                )}
               </View>
             );
           })
@@ -258,7 +258,7 @@ const styles = StyleSheet.create({
   name: { color: '#f1f5f9', fontSize: 16, fontWeight: '700', flex: 1, marginRight: 8 },
   badge: { flexDirection: 'row', alignItems: 'center', gap: 3, borderRadius: 6, paddingHorizontal: 8, paddingVertical: 4 },
   badgeText: { fontSize: 11, fontWeight: '700' },
-  menu: { position: 'absolute', top: 28, right: 0, backgroundColor: '#0f172a', borderRadius: 10, borderWidth: 1, borderColor: '#334155', paddingVertical: 4, minWidth: 130, zIndex: 50, elevation: 8 },
+  menu: { position: 'absolute', top: 44, right: 14, backgroundColor: '#0f172a', borderRadius: 10, borderWidth: 1, borderColor: '#334155', paddingVertical: 4, minWidth: 140, zIndex: 999, elevation: 20 },
   menuItem: { flexDirection: 'row', alignItems: 'center', gap: 8, paddingHorizontal: 12, paddingVertical: 9 },
   dot: { width: 8, height: 8, borderRadius: 4 },
   menuText: { color: '#cbd5e1', fontSize: 13 },
