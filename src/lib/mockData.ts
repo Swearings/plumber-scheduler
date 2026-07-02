@@ -1,7 +1,9 @@
 import dayjs from 'dayjs';
 import { Job, User, Invoice } from '../types';
 
-export const DEMO_MODE = true; // set to false once Supabase is configured
+// Demo mode is ON until Supabase keys are configured. Once EXPO_PUBLIC_SUPABASE_URL
+// is set (a real https URL), the app switches to the live database automatically.
+export const DEMO_MODE = !(process.env.EXPO_PUBLIC_SUPABASE_URL || '').startsWith('http');
 
 export const mockTechnicians: User[] = [
   { id: 't1', email: 'mike@plumberpro.com', full_name: 'Mike Reyes', role: 'technician', color: '#3b82f6' },
