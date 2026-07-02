@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { supabase } from '../lib/supabase';
-import { getProfile } from '../lib/auth';
+import { userFromSession } from '../lib/auth';
 import { User } from '../types';
 import { DEMO_MODE, demoUser } from '../lib/mockData';
 
@@ -11,21 +11,13 @@ export function useAuth() {
   useEffect(() => {
     if (DEMO_MODE) return;
 
-    supabase.auth.getSession().then(async ({ data: { session } }) => {
-      if (session?.user) {
-        const profile = await getProfile(session.user.id);
-        setUser(profile);
-      }
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setUser(session?.user ? userFromSession(session.user) : null);
       setLoading(false);
     });
 
-    const { data: listener } = supabase.auth.onAuthStateChange(async (_event, session) => {
-      if (session?.user) {
-        const profile = await getProfile(session.user.id);
-        setUser(profile);
-      } else {
-        setUser(null);
-      }
+    const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user ? userFromSession(session.user) : null);
     });
 
     return () => listener.subscription.unsubscribe();

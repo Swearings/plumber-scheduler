@@ -22,26 +22,20 @@ export async function fetchJobs({ userId, isDispatcher, rangeStart, rangeEnd }: 
       .sort((a, b) => a.scheduled_start.localeCompare(b.scheduled_start));
   }
 
-  let query = supabase
+  // RLS already scopes to the logged-in owner, so no user filter is needed.
+  const { data, error } = await supabase
     .from('jobs')
-    .select('*, technician:profiles!jobs_assigned_to_fkey(*)')
+    .select('*')
     .gte('scheduled_start', rangeStart)
     .lte('scheduled_start', rangeEnd)
     .order('scheduled_start');
-
-  if (!isDispatcher) query = query.eq('assigned_to', userId);
-
-  const { data, error } = await query;
   if (error) throw error;
   return (data || []) as Job[];
 }
 
 export async function fetchTechnicians(): Promise<User[]> {
-  if (DEMO_MODE) return mockTechnicians;
-
-  const { data, error } = await supabase.from('profiles').select('*').eq('role', 'technician');
-  if (error) throw error;
-  return (data || []) as User[];
+  // Technician assignment was removed; kept as a no-op for compatibility.
+  return DEMO_MODE ? mockTechnicians : [];
 }
 
 export type JobInput = Omit<Job, 'id' | 'technician' | 'created_at'>;

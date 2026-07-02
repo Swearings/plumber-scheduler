@@ -8,6 +8,8 @@ import { fetchInvoices } from '../lib/invoicesApi';
 import { fetchCustomers } from '../lib/customersApi';
 import { Job, JobStatus, Invoice, invoiceTotal, Customer, CUSTOMER_STATUS_COLORS, CUSTOMER_STATUS_LABELS } from '../types';
 import { COMPANY_NAME } from '../lib/config';
+import { DEMO_MODE } from '../lib/mockData';
+import { signOut } from '../lib/auth';
 import JobCard from '../components/JobCard';
 
 type Period = 'day' | 'week' | 'month' | 'year';
@@ -81,8 +83,17 @@ export default function HomeScreen({ userId, isDispatcher }: Props) {
       refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="#3b82f6" />}
     >
       {/* Welcome */}
-      <Text style={styles.welcome}>Welcome,</Text>
-      <Text style={styles.company}>{COMPANY_NAME}</Text>
+      <View style={styles.welcomeRow}>
+        <View>
+          <Text style={styles.welcome}>Welcome,</Text>
+          <Text style={styles.company}>{COMPANY_NAME}</Text>
+        </View>
+        {!DEMO_MODE && (
+          <TouchableOpacity onPress={() => signOut()} hitSlop={10} style={styles.signOut}>
+            <Ionicons name="log-out-outline" size={22} color="#94a3b8" />
+          </TouchableOpacity>
+        )}
+      </View>
 
       {/* Revenue */}
       <View style={styles.revCard}>
@@ -170,8 +181,10 @@ const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#0f172a' },
   center: { flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#0f172a' },
 
+  welcomeRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 20 },
   welcome: { color: '#94a3b8', fontSize: 18, marginTop: 4 },
-  company: { color: '#f1f5f9', fontSize: 28, fontWeight: '800', marginBottom: 20 },
+  company: { color: '#f1f5f9', fontSize: 28, fontWeight: '800' },
+  signOut: { padding: 6, marginTop: 6 },
 
   revCard: { backgroundColor: '#1e293b', borderRadius: 16, padding: 18, marginBottom: 24 },
   revHead: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start', zIndex: 10 },

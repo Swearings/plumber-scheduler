@@ -1,6 +1,8 @@
 import { Permit, PermitStatus } from './types';
+import { supabase } from '../lib/supabase';
+import { DEMO_MODE } from '../lib/mockData';
 
-// Demo in-memory store (same pattern as jobsApi/invoicesApi). Swap for Supabase later.
+// Demo in-memory store (used until Supabase keys are configured).
 let counter = 42;
 
 const seed: Permit[] = [
@@ -40,33 +42,72 @@ const seed: Permit[] = [
   },
 ];
 
+// ---- map between the DB row (snake_case) and the app Permit (camelCase) ----
+function rowToPermit(r: any): Permit {
+  return {
+    id: r.id, customer_id: r.customer_id, reference: r.reference, city: r.city,
+    category: r.category, workType: r.work_type, status: r.status, screening: r.screening,
+    answers: r.answers || {}, documents: r.documents || [],
+    forwardedAt: r.forwarded_at, forwardedTo: r.forwarded_to,
+    createdAt: r.created_at, updatedAt: r.updated_at,
+  };
+}
+function permitToRow(p: Permit): any {
+  return {
+    customer_id: p.customer_id, reference: p.reference, city: p.city, category: p.category,
+    work_type: p.workType, status: p.status, screening: p.screening,
+    answers: p.answers, documents: p.documents,
+    forwarded_at: p.forwardedAt, forwarded_to: p.forwardedTo,
+  };
+}
+
 export async function listPermits(): Promise<Permit[]> {
-  return [...seed].sort((a, b) => b.createdAt.localeCompare(a.createdAt));
+  if (DEMO_MODE) return [...seed].sort((a, b) => b.createdAt.localeCompare(a.createdAt));
+  const { data, error } = await supabase.from('permits').select('*').order('created_at', { ascending: false });
+  if (error) throw error;
+  return (data || []).map(rowToPermit);
 }
 
 export async function getPermit(id: string): Promise<Permit | undefined> {
-  return seed.find(p => p.id === id);
+  if (DEMO_MODE) return seed.find(p => p.id === id);
+  const { data } = await supabase.from('permits').select('*').eq('id', id).single();
+  return data ? rowToPermit(data) : undefined;
 }
 
 export function newReference(): string {
   counter += 1;
-  return `PM-2026-${String(counter).padStart(4, '0')}`;
+  return `PM-${new Date().getFullYear()}-${String(counter).padStart(4, '0')}`;
 }
 
 export async function savePermit(p: Permit): Promise<Permit> {
-  const idx = seed.findIndex(x => x.id === p.id);
-  p.updatedAt = new Date().toISOString();
-  if (idx >= 0) seed[idx] = p;
-  else seed.unshift(p);
-  return p;
+  if (DEMO_MODE) {
+    const idx = seed.findIndex(x => x.id === p.id);
+    p.updatedAt = new Date().toISOString();
+    if (idx >= 0) seed[idx] = p; else seed.unshift(p);
+    return p;
+  }
+  // Live: let the DB generate the id/timestamps.
+  const { data, error } = await supabase.from('permits').insert(permitToRow(p)).select().single();
+  if (error) throw error;
+  return rowToPermit(data);
 }
 
 export async function setStatus(id: string, status: PermitStatus): Promise<void> {
-  const p = seed.find(x => x.id === id);
-  if (p) { p.status = status; p.updatedAt = new Date().toISOString(); }
+  if (DEMO_MODE) {
+    const p = seed.find(x => x.id === id);
+    if (p) { p.status = status; p.updatedAt = new Date().toISOString(); }
+    return;
+  }
+  const { error } = await supabase.from('permits').update({ status }).eq('id', id);
+  if (error) throw error;
 }
 
 export async function deletePermit(id: string): Promise<void> {
-  const idx = seed.findIndex(x => x.id === id);
-  if (idx >= 0) seed.splice(idx, 1);
+  if (DEMO_MODE) {
+    const idx = seed.findIndex(x => x.id === id);
+    if (idx >= 0) seed.splice(idx, 1);
+    return;
+  }
+  const { error } = await supabase.from('permits').delete().eq('id', id);
+  if (error) throw error;
 }

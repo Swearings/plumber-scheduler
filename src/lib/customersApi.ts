@@ -49,12 +49,14 @@ export async function saveCustomer(input: CustomerInput, existingId?: string): P
     mockCustomers.unshift(created);
     return created;
   }
+  // owner_id is set by the DB default (auth.uid()); created_by isn't a column.
+  const { created_by, ...row } = input;
   if (existingId) {
-    const { data, error } = await supabase.from('customers').update(input).eq('id', existingId).select().single();
+    const { data, error } = await supabase.from('customers').update(row).eq('id', existingId).select().single();
     if (error) throw error;
     return data as Customer;
   }
-  const { data, error } = await supabase.from('customers').insert(input).select().single();
+  const { data, error } = await supabase.from('customers').insert(row).select().single();
   if (error) throw error;
   return data as Customer;
 }
